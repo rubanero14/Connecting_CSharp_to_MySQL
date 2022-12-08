@@ -25,12 +25,12 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in people)
+            @foreach (var person in people)
             {
                 <tr>
-                    <td>@item.Id</td>
-                    <td>@item.FirstName</td>
-                    <td>@item.LastName</td>
+                    <td>@person.Id</td>
+                    <td>@person.FirstName</td>
+                    <td>@person.LastName</td>
                 </tr>
             }
         </tbody>
