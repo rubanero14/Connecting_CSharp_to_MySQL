@@ -16,12 +16,25 @@
 }
 else 
 {
-    <ul>
-    @foreach(var item in people)
-    {
-        <li>@item.FirstName @item.LastName</li>
-    }
-    </ul>  
+    <table class="table table-bordered table-striped table-hover table-responsive">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in people)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.FirstName</td>
+                    <td>@item.LastName</td>
+                </tr>
+            }
+        </tbody>
+    </table>  
 }
 
 @code {
