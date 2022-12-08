@@ -1,0 +1,35 @@
+﻿@page "/people"
+
+<PageTitle>People Data</PageTitle>
+
+@using DataLibrary;
+@using BlazorServer.Models;
+@using Microsoft.Extensions.Configuration;
+@inject IDataAccess _data
+@inject IConfiguration _config;
+
+<h3>People</h3>
+
+@if (people == null) 
+{
+    <p><em>Loading...</em></p>
+}
+else 
+{
+    <ul>
+    @foreach(var item in people)
+    {
+        <li>@item.FirstName @item.LastName</li>
+    }
+    </ul>  
+}
+
+@code {
+    List<PersonModel> people;
+
+    protected override async Task OnInitializedAsync()
+    {
+        string sql = "SELECT * FROM people";
+        people = await _data.LoadData<PersonModel, dynamic>(sql, new {}, _config.GetConnectionString("default"));
+    }
+}
