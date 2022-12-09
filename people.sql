@@ -23,7 +23,7 @@ VALUES
 	(7,'Winter','Soldier'),
 	(8,'Black','Widow'),
 	(9,'Tony','Stark'),
-	(10,'Jane','Doe'),
+	(10,'John','Doe'),
 	(11,'Jane','Doe'),
 	(12,'Natasha','Romanoff'),
 	(13,'James','Bond'),
