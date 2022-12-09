@@ -1,49 +1,30 @@
-CREATE DATABASE csharp_lesson_one;
+CREATE DATABASE  IF NOT EXISTS `peopledb`
+USE `peopledb`;
 
-USE csharp_lesson_one;
+DROP TABLE IF EXISTS `people`;
 
-CREATE TABLE people (
-    Id INT NOT NULL,
-    FirstName VARCHAR(255) NOT NULL,
-    LastName VARCHAR(255) NOT NULL,
-    PRIMARY KEY (Id)
-);
+CREATE TABLE `people` (
+  `Id` int NOT NULL AUTO_INCREMENT,
+  `FirstName` varchar(255) NOT NULL,
+  `LastName` varchar(255) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO 
-	people (
-	 FirstName,
-	 LastName
-	)
+LOCK TABLES `people` WRITE;
+
+INSERT INTO `people` 
 VALUES 
-	(
-		'Wonder',
-		'Woman'
-	),
-	(
-		'Cat',
-		'Woman'
-	),
-	(
-		'Captain',
-		'Planet'
-	),
-	(
-		'Mickey',
-		'Mouse'
-	),
-	(
-		'Minnie',
-		'Mouse'
-	),
-	(
-		'The',
-		'Hulk'
-	);
-
-SELECT * FROM people;
-
-/* DROP TABLE csharp_lesson_one.people; */
-
-
-
-
+	(1,'Bruce','Wayne'),
+	(2,'Wonder','Woman'),
+	(3,'Minnie','Mouse'),
+	(4,'Mickey','Mouse'),
+	(5,'Tony','Stark'),
+	(6,'The','Hulk'),
+	(7,'Winter','Soldier'),
+	(8,'Black','Widow'),
+	(9,'Tony','Stark'),
+	(10,'Jane','Doe'),
+	(11,'Jane','Doe'),
+	(12,'Natasha','Romanoff'),
+	(13,'James','Bond'),
+	(15,'Keanu','Reeves');
