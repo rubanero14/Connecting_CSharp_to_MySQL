@@ -3,7 +3,7 @@ CREATE DATABASE csharp_lesson_one;
 USE csharp_lesson_one;
 
 CREATE TABLE people (
-	Id INT NOT NULL,
+    Id INT NOT NULL,
     FirstName VARCHAR(255) NOT NULL,
     LastName VARCHAR(255) NOT NULL,
     PRIMARY KEY (Id)
