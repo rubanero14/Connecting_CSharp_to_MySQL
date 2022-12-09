@@ -33,17 +33,21 @@
     </div>
 </div>
 
-@if (people == null && !isFetching)
+@if (people == null && !isFetching && !notFound && !isUnspecified)
 {
     <h4>Click <strong>Fetch Data</strong> to load data!</h4>
 }
-else if (people == null && isFetching)
+else if (people == null && isFetching && !notFound && !isUnspecified)
 {
-    <p><em>Loading...</em></p>
+    <h4><em>Loading...</em></h4>
 }
-else if (notFound)
+else if (notFound && !isUnspecified)
 {
-        <p><em>Record not found</em></p>
+    <h4 class="text-danger"><em>Record not found</em></h4>
+}
+else if (isUnspecified && !notFound)
+{
+    <h4 class="text-danger"><em>@message</em></h4>
 }
 else 
 {
@@ -76,6 +80,8 @@ else
     string firstName = "";
     string lastName = "";
     bool notFound = false;
+    string message = "";
+    bool isUnspecified = false;
 
     // Insert new person into Table - Create
     private async Task InsertData()
@@ -101,7 +107,7 @@ else
         isFetching = true;
         string sql = "";
 
-        if (id == null && firstName == "" && lastName == "")
+        if (id == null && firstName.Trim() == "" && lastName.Trim() == "")
         {
             sql = $"SELECT * FROM people";
         } 
@@ -109,11 +115,11 @@ else
         {
             sql = $"SELECT * FROM people WHERE Id = @Id";
         }
-        else if (firstName != "")
+        else if (firstName.Trim() != "")
         {
             sql = $"SELECT * FROM people WHERE FirstName = @FirstName";
         }
-        else if (lastName != "")
+        else if (lastName.Trim() != "")
         {
             sql = $"SELECT * FROM people WHERE LastName = @LastName";
         }
@@ -133,23 +139,69 @@ else
         id = null;
         firstName = "";
         lastName = "";
-
+        isUnspecified = false;
+        message = "";
         isFetching = false;
     }
 
-    // Get all List from Table - Update
+    // Update an existing data - Update
     private async Task UpdateData()
     {
-        string sql = "UPDATE people SET FirstName = @FirstName, LastName = @LastName WHERE Id = @Id";
-        await _data.SaveData(sql, new { FirstName = firstName, LastName = lastName, Id = id }, _config.GetConnectionString("default"));
-        await FetchData();
+        string sql = "";
+
+        if (id == null && firstName.Trim() == "" && lastName.Trim() == "")
+        {
+            isUnspecified = true;
+            message = "Update paramters not specified!";
+        }
+        else
+        {
+            if (id != null)
+            {
+                sql = $"UPDATE people SET FirstName = @FirstName, LastName = @LastName WHERE Id = @Id";
+            }
+            else if (firstName.Trim() != "")
+            {
+                sql = $"UPDATE people SET FirstName = @FirstName, LastName = @LastName WHERE FirstName = @FirstName";
+            }
+            else if (lastName.Trim() != "")
+            {
+                sql = "UPDATE people SET FirstName = @FirstName, LastName = @LastName WHERE LastName = @LastName";
+            }
+
+            await _data.SaveData(sql, new { FirstName = firstName, LastName = lastName, Id = id }, _config.GetConnectionString("default"));
+            await FetchData();
+        }
     }
 
-    // Get all List from Table - Delete
+    // Delete an existing data - Delete
     private async Task DeleteData()
     {
-        string sql = "DELETE FROM people WHERE FirstName = @FirstName;";
-        await _data.SaveData(sql, new { FirstName = firstName }, _config.GetConnectionString("default"));
-        await FetchData();
+        string sql = "";
+
+        if (id == null && firstName.Trim() == "" && lastName.Trim() == "")
+        {
+            isUnspecified = true;
+            message = "Delete paramters not specified!";
+        } 
+        else
+        {
+            if (id != null)
+            {
+                sql = $"DELETE FROM people WHERE Id = @Id";
+            }
+            else if (firstName.Trim() != "")
+            {
+                sql = $"DELETE FROM people WHERE FirstName = @FirstName;";
+            }
+            else if (lastName.Trim() != "")
+            {
+                sql = "DELETE FROM people WHERE LastName = @LastName;";
+            }
+
+            await _data.SaveData(sql, new { Id = id, FirstName = firstName, LastName = lastName }, _config.GetConnectionString("default"));
+            await FetchData();
+            message = "Sucessfully Deleted!";
+        }
     }
 }
