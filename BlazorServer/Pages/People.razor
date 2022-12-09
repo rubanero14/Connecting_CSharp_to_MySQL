@@ -10,18 +10,40 @@
 
 <h3>People</h3>
 
-<button class="btn btn-outline-success mb-3" @onclick="FetchData">Fetch All</button>
-<button class="btn btn-outline-primary mb-3" @onclick="InsertData">Insert</button>
-<button class="btn btn-outline-secondary mb-3" @onclick="UpdateData">Update</button>
-<button class="btn btn-outline-danger mb-3" @onclick="DeleteData">Delete</button>  
+<div class="row">
+    <div class="col-12 col-md-6 col-lg-4">
+        <Form class="mb-5">
+            <div class="input-group">
+                <input placeholder="Insert Id.." class="form-control mb-3" id="id" type="number" @bind="id" />
+            </div>
+            <div class="input-group">
+                <input placeholder="Insert First Name.." class="form-control mb-3" id="firstName" type="text" @bind="firstName" />
+            </div>
+            <div class="input-group">
+                <input placeholder="Insert Last Name.." class="form-control mb-3" id="lastName" type="text" @bind="lastName" />
+            </div>
+            <button class="btn btn-outline-primary mb-3" type="reset">Reset</button> 
+        </Form>
+        <div class="button-group">
+            <button class="btn btn-outline-success mb-3" @onclick="FetchData">Fetch Data</button>
+            <button class="btn btn-outline-primary mb-3" @onclick="InsertData">Insert</button>
+            <button class="btn btn-outline-secondary mb-3" @onclick="UpdateData">Update</button>
+            <button class="btn btn-outline-danger mb-3" @onclick="DeleteData">Delete</button>
+        </div>
+    </div>
+</div>
 
 @if (people == null && !isFetching)
 {
-    <h4>Press <kbd>Fetch All</kbd> to load data!</h4>
+    <h4>Click <strong>Fetch Data</strong> to load data!</h4>
 }
 else if (people == null && isFetching)
 {
     <p><em>Loading...</em></p>
+}
+else if (notFound)
+{
+        <p><em>Record not found</em></p>
 }
 else 
 {
@@ -50,12 +72,26 @@ else
     List<PersonModel> people;
 
     bool isFetching = false;
+    int? id = null;
+    string firstName = "";
+    string lastName = "";
+    bool notFound = false;
 
     // Insert new person into Table - Create
     private async Task InsertData()
     {
-        string sql = $"INSERT INTO people(FirstName, LastName) VALUES (@FirstName, @LastName);";
-        await _data.SaveData(sql, new { FirstName = "Black", LastName = "Widow" }, _config.GetConnectionString("default"));
+        string sql = "";
+
+        if (id == null)
+        {
+            sql = $"INSERT INTO people(FirstName, LastName) VALUES (@FirstName, @LastName);";
+        }
+        else
+        {
+            sql = $"INSERT INTO people(Id, FirstName, LastName) VALUES (@Id, @FirstName, @LastName);";
+        }
+
+        await _data.SaveData(sql, new { Id = id, FirstName = firstName, LastName = lastName }, _config.GetConnectionString("default"));
         await FetchData();
     }
 
@@ -63,8 +99,41 @@ else
     private async Task FetchData()
     {
         isFetching = true;
-        string sql = "SELECT * FROM people";
-        people = await _data.LoadData<PersonModel, dynamic>(sql, new {}, _config.GetConnectionString("default"));
+        string sql = "";
+
+        if (id == null && firstName == "" && lastName == "")
+        {
+            sql = $"SELECT * FROM people";
+        } 
+        else if (id != null)
+        {
+            sql = $"SELECT * FROM people WHERE Id = @Id";
+        }
+        else if (firstName != "")
+        {
+            sql = $"SELECT * FROM people WHERE FirstName = @FirstName";
+        }
+        else if (lastName != "")
+        {
+            sql = $"SELECT * FROM people WHERE LastName = @LastName";
+        }
+
+        people = await _data.LoadData<PersonModel, dynamic>(sql, new { Id = id, FirstName = firstName, LastName = lastName }, _config.GetConnectionString("default"));
+
+        if(people.Count == 0)
+        {
+            notFound = true;
+        } 
+        else
+        {
+            notFound = false;
+        }
+
+        // Garbage Collection
+        id = null;
+        firstName = "";
+        lastName = "";
+
         isFetching = false;
     }
 
@@ -72,7 +141,7 @@ else
     private async Task UpdateData()
     {
         string sql = "UPDATE people SET FirstName = @FirstName, LastName = @LastName WHERE Id = @Id";
-        await _data.SaveData(sql, new { FirstName = "Bruce", LastName = "Wayne", Id = 1 }, _config.GetConnectionString("default"));
+        await _data.SaveData(sql, new { FirstName = firstName, LastName = lastName, Id = id }, _config.GetConnectionString("default"));
         await FetchData();
     }
 
@@ -80,7 +149,7 @@ else
     private async Task DeleteData()
     {
         string sql = "DELETE FROM people WHERE FirstName = @FirstName;";
-        await _data.SaveData(sql, new { FirstName = "Cat" }, _config.GetConnectionString("default"));
+        await _data.SaveData(sql, new { FirstName = firstName }, _config.GetConnectionString("default"));
         await FetchData();
     }
 }
