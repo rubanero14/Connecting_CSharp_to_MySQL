@@ -10,7 +10,7 @@ CREATE TABLE people (
 );
 
 INSERT INTO 
-	people(
+	people (
 	 FirstName,
 	 LastName
 	)
