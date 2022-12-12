@@ -14,18 +14,18 @@ LOCK TABLES `people` WRITE;
 
 INSERT INTO `people` 
 VALUES 
-	(1,'Bruce','Wayne'),
-	(2,'Wonder','Woman'),
-	(3,'Minnie','Mouse'),
-	(4,'Mickey','Mouse'),
-	(5,'Tony','Stark'),
-	(6,'The','Hulk'),
-	(7,'Winter','Soldier'),
-	(8,'Black','Widow'),
-	(9,'Tony','Stark'),
-	(10,'John','Doe'),
-	(11,'Jane','Doe'),
-	(12,'Natasha','Romanoff'),
-	(13,'James','Bond'),
-	(14,'Margot','Robbie'),
-	(15,'Keanu','Reeves');
+	('Bruce','Wayne'),
+	('Wonder','Woman'),
+	('Minnie','Mouse'),
+	('Mickey','Mouse'),
+	('Tony','Stark'),
+	('The','Hulk'),
+	('Winter','Soldier'),
+	('Black','Widow'),
+	('Tony','Stark'),
+	('John','Doe'),
+	('Jane','Doe'),
+	('Natasha','Romanoff'),
+	('James','Bond'),
+	('Margot','Robbie'),
+	('Keanu','Reeves');
